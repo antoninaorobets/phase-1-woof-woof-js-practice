@@ -17,6 +17,7 @@ function addPups(data) {
         dog.addEventListener('click', getDogInfo)
         dog.textContent = element.name
         dog.dataset.id = element.id  // alternative ways?
+        dog.dataset.isgood = element.isGoodDog
         dogBar.appendChild(dog)
     });
 }
@@ -70,30 +71,40 @@ function changeButton(event) {
 function updateBtn(data) {
     const btn = document.getElementById('good-bad')
     const newState = data.isGoodDog
+    const filter = document.getElementById('good-dog-filter')
+    const id = btn.dataset.id
+    const dog = document.querySelector(`[data-id="${id}"]`)
     btn.dataset.isgood = newState
     if (newState) {
         btn.textContent = "Good Dog!"
+        dog.removeAttribute("style")
     }
     else {
         btn.textContent = "Bad Dog!"
+        if (filter.dataset.filter === "ON") {
+            dog.style.display = "none"
+        }
     }
 }
 
-console.log('hi')
-
-function filterDogs(event){
+function filterDogs(event) {
     const btn = event.target
-    console.log(event.target)
+    const dogs = document.querySelectorAll('span')
     if (btn.dataset.filter === "ON") {
-        //change to false
-        console.log( 'if  true to false')
         btn.textContent = "Filter good dogs: OFF"
         btn.dataset.filter = "OFF"
+        dogs.forEach(dog => {
+            dog.removeAttribute("style")
+        })
     }
     else {
-        //chanhe to true
-        console.log( 'esle  false to true')
         btn.textContent = "Filter good dogs: ON"
         btn.dataset.filter = "ON"
+        dogs.forEach(dog => {
+            if (dog.dataset.isgood === "false") {
+                dog.style.display = "none"
+            }
+        })
     }
 }
+
