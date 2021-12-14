@@ -5,6 +5,9 @@ function init() {
         .then(resp => resp.json())
         .then(addPups)
         .catch(error => console.error(error))
+
+    document.querySelector("#good-dog-filter").addEventListener('click', filterDogs)
+    document.querySelector("#good-dog-filter").dataset.filter = "OFF"
 }
 
 function addPups(data) {
@@ -77,3 +80,20 @@ function updateBtn(data) {
 }
 
 console.log('hi')
+
+function filterDogs(event){
+    const btn = event.target
+    console.log(event.target)
+    if (btn.dataset.filter === "ON") {
+        //change to false
+        console.log( 'if  true to false')
+        btn.textContent = "Filter good dogs: OFF"
+        btn.dataset.filter = "OFF"
+    }
+    else {
+        //chanhe to true
+        console.log( 'esle  false to true')
+        btn.textContent = "Filter good dogs: ON"
+        btn.dataset.filter = "ON"
+    }
+}
