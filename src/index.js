@@ -1,10 +1,10 @@
 document.addEventListener('DOMContentLoaded', init)
 
-function init(){
+function init() {
     fetch('http://localhost:3000/pups')
-    .then(resp => resp.json())
-    .then(addPups)
-    .catch(error => console.error(error))
+        .then(resp => resp.json())
+        .then(addPups)
+        .catch(error => console.error(error))
 }
 
 function addPups(data) {
@@ -20,12 +20,12 @@ function addPups(data) {
 
 function getDogInfo(event) {
     fetch(`http://localhost:3000/pups/${event.target.dataset.id}`)
-    .then(resp => resp.json())
-    .then(showDogInfo)
-    .catch(error => console.error(error))
+        .then(resp => resp.json())
+        .then(showDogInfo)
+        .catch(error => console.error(error))
 }
 
-function showDogInfo(data){
+function showDogInfo(data) {
     const dogInfo = document.querySelector('#dog-info')
     dogInfo.innerHTML = ''
     const name = document.createElement('h2')
@@ -36,31 +36,44 @@ function showDogInfo(data){
     dogInfo.appendChild(img)
     const button = document.createElement('button')
     button.dataset.isgood = data.isGoodDog
-    if (data.isGoodDog){button.textContent = "Good Dog!"}
-        else {button.textContent = "Bad Dog!"}
+    button.dataset.id = data.id
+    button.id = "good-bad"
+    if (data.isGoodDog) { button.textContent = "Good Dog!" }
+    else { button.textContent = "Bad Dog!" }
     button.addEventListener('click', changeButton)
     dogInfo.appendChild(button)
 }
 
-function changeButton(event){
-    console.log('changeButton')
-//     console.log(event.target.parentNode)
-//     const currentState = event.target.dataset.isGoodDog
+function changeButton(event) {
+    const btn = event.target
+    const initialState = (btn.dataset.isgood === 'true')
+    const newState = !initialState
 
-// //     fetch(`http://localhost:3000/pups/${event.target.parentNode.dataset.id}`, {
-// //         method: 'PATCH',
-// //         headers: {
-// //             "Content-Type": "application/json",
-// //             Accept: "application/json"
-// //         },
-// //         body: JSON.stringify({
-// //             isGoodDog : "true"
-// //         })
-// //     })
-// //     .then(resp => resp.json())
-// //     .then(data => console.log(data))
-// //     .catch(error => console.error(error))
+    fetch(`http://localhost:3000/pups/${btn.dataset.id}`, {
+        method: 'PATCH',
+        headers: {
+            "Content-Type": "application/json",
+            Accept: "application/json"
+        },
+        body: JSON.stringify({
+            isGoodDog: newState
+        })
+    })
+        .then(resp => resp.json())
+        .then(updateBtn)
+        .catch(error => console.error(error))
 }
 
+function updateBtn(data) {
+    const btn = document.getElementById('good-bad')
+    const newState = data.isGoodDog
+    btn.dataset.isgood = newState
+    if (newState) {
+        btn.textContent = "Good Dog!"
+    }
+    else {
+        btn.textContent = "Bad Dog!"
+    }
+}
 
 console.log('hi')
